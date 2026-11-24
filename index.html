@@ -1,0 +1,1534 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#EFE9DA">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%231F1B16'/%3E%3Crect x='18' y='18' width='24' height='24' fill='%23FFD23F'/%3E%3Crect x='58' y='18' width='24' height='24' fill='%23E8543F'/%3E%3Crect x='18' y='58' width='24' height='24' fill='%234E9A51'/%3E%3Crect x='58' y='58' width='24' height='24' fill='%23FFF6E3'/%3E%3C/svg%3E">
+<title>漫剧工作台 · 像素版</title>
+<style>
+:root{
+  --bg:#EFE9DA; --panel:#FFFDF6; --panel2:#F6F0DF; --paper:#FFFBEF;
+  --ink:#1F1B16; --ink2:#4A443B; --mut:#8A8172;
+  --y:#FFD23F; --r:#E8543F; --g:#4E9A51; --b:#3D6FB4; --o:#F0913B;
+  --line:#1F1B16;
+  --mono:"Courier New",ui-monospace,"JetBrains Mono",monospace;
+  --bd:3px solid var(--line);
+  --sh:4px 4px 0 var(--line);
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{
+  background:var(--bg);color:var(--ink);font-size:14px;line-height:1.65;
+  font-family:"PingFang SC","HarmonyOS Sans SC","Microsoft YaHei","Noto Sans SC",-apple-system,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.5;
+  background-image:linear-gradient(rgba(31,27,22,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(31,27,22,.05) 1px,transparent 1px);
+  background-size:24px 24px;}
+::-webkit-scrollbar{width:12px;height:12px}
+::-webkit-scrollbar-track{background:var(--panel2);border-left:2px solid var(--line)}
+::-webkit-scrollbar-thumb{background:var(--ink);border:2px solid var(--panel2)}
+button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit}
+button{cursor:pointer}
+.en{font-family:var(--mono);letter-spacing:.12em;text-transform:uppercase}
+
+.app{position:relative;z-index:1;display:grid;grid-template-columns:272px 1fr;height:100vh;overflow:hidden}
+
+/* ============ 左栏 ============ */
+.sidebar{background:var(--panel);border-right:var(--bd);display:flex;flex-direction:column;overflow:hidden}
+.brand{display:flex;gap:10px;align-items:center;padding:13px 13px 11px;border-bottom:var(--bd);background:var(--ink)}
+.brand-mark{width:34px;height:34px;flex:none;display:grid;grid-template-columns:1fr 1fr;gap:2px}
+.brand-mark i{display:block}
+.brand-txt b{display:block;color:#FFF6E3;font-size:15px;letter-spacing:.1em}
+.brand-txt span{display:block;color:#B8AE9C;font-size:9px;letter-spacing:.2em;font-family:var(--mono);margin-top:2px}
+.nav-label{font-family:var(--mono);font-size:10px;letter-spacing:.18em;color:var(--mut);padding:11px 13px 6px;display:flex;justify-content:space-between}
+#nav{flex:1;min-height:0;overflow-y:auto;padding:0 8px;scrollbar-width:thin}
+.stepitem{display:flex;align-items:center;gap:9px;padding:6px 8px;margin:2px 0;border:2.5px solid transparent;cursor:pointer;user-select:none;font-size:13px;color:var(--ink2);position:relative}
+.stepitem:hover{background:var(--panel2)}
+.stepitem.on{background:var(--y);border-color:var(--line);color:var(--ink);font-weight:700;box-shadow:3px 3px 0 var(--line)}
+.sn{width:22px;height:22px;flex:none;display:grid;place-items:center;background:var(--panel2);border:2px solid var(--line);font-family:var(--mono);font-size:11px;font-weight:700;color:var(--ink2)}
+.stepitem.ok .sn{background:var(--g);color:#fff}
+.stepitem.on .sn{background:var(--paper)}
+.st{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.se{font-family:var(--mono);font-size:8.5px;color:var(--mut);letter-spacing:.08em;display:block}
+.stepitem.on .se{color:#6b5f2a}
+
+.memo{border-top:2.5px dashed var(--line);padding:0 8px;flex:none}
+.memo summary{font-family:var(--mono);font-size:10px;letter-spacing:.18em;color:var(--mut);padding:8px 5px;cursor:pointer;user-select:none;list-style:none;display:flex;justify-content:space-between}
+.memo summary::-webkit-details-marker{display:none}
+.memo summary::before{content:"▸ "}
+.memo[open] summary::before{content:"▾ "}
+.memo .m-list{max-height:76px;overflow-y:auto;padding:2px 4px;scrollbar-width:thin}
+.m-item{display:flex;align-items:flex-start;gap:6px;padding:5px 6px;margin:2px 0;border:2.5px solid var(--line);background:#FFFEFA;cursor:pointer;font-size:12px;line-height:1.65;position:relative}
+.m-item:hover{background:#FFFBEA}
+.m-item .m-tx{flex:1;min-width:0;word-break:break-all;white-space:pre-wrap}
+.m-check{flex:none;width:19px;height:19px;border:2px solid var(--line);background:#fff;color:var(--g);font-family:var(--mono);font-size:12px;line-height:15px;text-align:center;cursor:pointer;user-select:none;box-shadow:2px 2px 0 var(--line)}
+.m-check:hover{background:#FFFBEA}
+.m-item.done .m-check{background:var(--g);color:#fff}
+.m-body{flex:1;min-width:0}
+.m-title{cursor:pointer;user-select:none;font-size:12px;font-weight:bold;line-height:1.6;word-break:break-all;display:flex;align-items:center;gap:5px}
+.m-title:hover{color:#8a5a00}
+.m-arrow{font-family:var(--mono);font-size:10px;color:var(--mut);flex:none}
+.m-full{margin-top:6px;padding:7px 8px;border-top:2px dashed var(--line);background:#FFFEFA;font-size:12px;line-height:1.75;white-space:pre-wrap;word-break:break-all;cursor:pointer}
+.big-list .m-title{font-size:14px}
+.big-list .m-full{font-size:13px;line-height:1.9}
+.m-compose{padding:4px 4px 8px}
+.m-title-input{width:100%;border:2.5px solid var(--line);background:#fff;padding:6px 8px;font-size:12px;outline:0;margin-bottom:5px;font-family:inherit}
+.m-title-input:focus{background:#FFFBEA}
+.big-add .m-title-input{font-size:13px;padding:8px 10px}
+.m-item.done .m-title{text-decoration:line-through;opacity:.5}
+.m-item.done .m-tx{text-decoration:line-through;opacity:.45}
+.m-item.done{border-color:#cfd4bb}
+.m-del{flex:none;border:0;background:none;color:var(--mut);font-family:var(--mono);font-size:11px;cursor:pointer;padding:1px 3px;line-height:1.4}
+.m-del:hover{color:var(--r)}
+.m-add{display:flex;gap:6px;padding:6px 4px 8px}
+.m-add input,.m-add textarea{flex:1;min-width:0;border:2.5px solid var(--line);background:#fff;padding:5px 8px;font-size:12px;outline:0;font-family:inherit}
+.m-add textarea{min-height:44px;resize:vertical;line-height:1.6}
+.m-add input:focus,.m-add textarea:focus,.m-add textarea:focus{background:#FFFBEA}
+.vopen{border:2px solid var(--line);background:#FFE28A;color:#3a2a00;font-size:9px;font-family:var(--mono);padding:1px 5px;cursor:pointer;box-shadow:2px 2px 0 var(--line)}
+.vopen:hover{background:#FFD23F}
+.big-list .m-item{font-size:13px;padding:9px 12px;margin:5px 0;background:#fff}
+.big-add{margin-bottom:12px}
+.big-add textarea{width:100%;min-height:88px;border:2.5px solid var(--line);background:#fff;padding:10px 12px;font-size:13px;line-height:1.7;outline:0;font-family:inherit;resize:vertical}
+.big-add textarea:focus{background:#FFFBEA}
+.big-add .m-add{padding:8px 0 0}
+.big-task .tk{font-size:13px;padding:10px 12px;margin:5px 0}
+.big-task .tk-add{padding:10px 0 0;border-top:0}
+.mk{padding:0 3px;border:1.5px solid;font-size:11px;white-space:nowrap;box-shadow:2px 2px 0 var(--line)}
+.mk-tag{background:#FFE28A;border-color:#8a6d1a;color:#5a4a10}
+.mk-at{background:#BEE3B2;border-color:#2f6b39;color:#1e4a26}
+.mk-date{background:#BBD6F2;border-color:#2F5F8F;color:#1d3f63}
+.mk-tool{background:#F4BFD4;border-color:#8f2f52;color:#6d1f3c}
+.mk-key{background:#FFE28A;border:0;border-bottom:2.5px solid #E8543F;color:#3a2a00;padding:0 2px;box-shadow:2px 2px 0 rgba(0,0,0,.18)}
+.m-hint{font-size:9px;color:var(--mut);padding:0 4px 7px;line-height:1.5}
+
+.tasks{border-top:2.5px dashed var(--line);padding:0 8px;flex:none;background:var(--paper)}
+.tasks summary{font-family:var(--mono);font-size:10px;letter-spacing:.18em;color:var(--mut);padding:8px 5px;cursor:pointer;user-select:none;list-style:none;display:flex;justify-content:space-between}
+.tasks summary::-webkit-details-marker{display:none}
+.tasks summary::before{content:"▸ "}
+.tasks[open] summary::before{content:"▾ "}
+.tk-list{max-height:118px;overflow-y:auto;padding:2px 4px 6px;scrollbar-width:thin}
+.tk{display:flex;gap:8px;align-items:flex-start;padding:5px 4px;font-size:12px;color:var(--ink2);cursor:pointer;user-select:none;line-height:1.5}
+.tk:hover{background:var(--panel2)}
+.tk.lock{opacity:.45;cursor:not-allowed}
+.tk .cb{width:15px;height:15px;flex:none;border:2.5px solid var(--line);background:#fff;margin-top:2px;display:grid;place-items:center;font-size:11px;font-weight:900;color:#fff}
+.tk.done .cb{background:var(--g)}
+.tk.done .tx{text-decoration:line-through;color:var(--mut)}
+.tk .tx{flex:1;min-width:0}
+.tk-add{display:flex;gap:6px;padding:8px 10px;border-top:2.5px dashed var(--line)}
+.tk-add input{flex:1;min-width:0;border:2.5px solid var(--line);background:#fff;padding:5px 8px;font-size:12px;outline:0}
+.tk-add input:focus{background:#FFFBEA}
+
+.side-foot{flex:none;border-top:var(--bd);padding:10px 11px;background:var(--panel2)}
+.prog{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:10px;color:var(--ink2);margin-bottom:8px}
+.prog .bar{flex:1;height:12px;border:2.5px solid var(--line);background:#fff;position:relative}
+.prog .bar i{position:absolute;inset:1px auto 1px 1px;width:0%;background:repeating-linear-gradient(90deg,var(--g) 0 6px,#3d7a40 6px 12px)}
+.save{display:flex;align-items:center;gap:6px;font-size:10.5px;color:var(--mut);margin-bottom:8px}
+.dot{width:8px;height:8px;border:2px solid var(--line);background:var(--mut);flex:none}
+.dot.ok{background:var(--g)}
+.dot.wait{background:var(--o)}
+.io{display:flex;gap:6px}
+.io button{flex:1}
+
+/* ============ 趣味元素：可一键关闭 ============ */
+.fun-bar{display:flex;gap:5px;margin-top:8px;padding-top:8px;border-top:2px dashed var(--line)}
+.fun-bar button{flex:1;min-width:0;border:2px solid var(--line);background:#FFF6E3;color:var(--ink);font-size:9.5px;font-family:var(--mono);padding:4px 2px;cursor:pointer;box-shadow:2px 2px 0 var(--line);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fun-bar button:hover{background:#FFE28A}
+.fun-bar button.on{background:#BEE3B2}
+.pal{position:fixed;right:16px;bottom:16px;z-index:60;display:flex;align-items:flex-end;gap:8px;pointer-events:none}
+.pal.hide{display:none}
+.pal-body{border:0;background:none;padding:0;cursor:pointer;pointer-events:auto;image-rendering:pixelated;filter:drop-shadow(3px 3px 0 rgba(0,0,0,.28));animation:palBob 2.4s steps(2,end) infinite}
+.pal-body:hover{transform:translateY(-2px)}
+@keyframes palBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+.pal-say{max-width:230px;border:2.5px solid var(--line);background:#FFFDF3;box-shadow:3px 3px 0 var(--line);padding:7px 9px;font-size:11.5px;line-height:1.6;color:var(--ink);pointer-events:auto;position:relative}
+.pal-say b{color:#a8620c}
+.pal-say .px{font-family:var(--mono);font-size:9px;color:var(--mut);display:block;margin-top:3px}
+.fun-restore{display:none;position:fixed;right:10px;bottom:10px;z-index:61;border:2.5px solid var(--line);background:#FFF6E3;color:var(--ink);font-family:var(--mono);font-size:10px;padding:5px 7px;cursor:pointer;box-shadow:2px 2px 0 var(--line)}
+.fun-restore.on{display:block}
+@media(min-width:1021px){.fun-restore.on{display:none}}
+.confetti{position:fixed;top:-18px;width:9px;height:13px;z-index:200;pointer-events:none;animation:confFall 2.1s linear forwards}
+@keyframes confFall{0%{transform:translateY(0) rotate(0);opacity:1}100%{transform:translateY(105vh) rotate(720deg);opacity:.9}}
+@media(max-width:900px){
+  .pal{right:8px;bottom:8px}
+  .pal-body svg{width:38px;height:38px}
+  .pal-say{display:none;position:absolute;right:0;bottom:46px;width:min(200px,72vw);max-width:none;font-size:10px;padding:5px 7px;box-shadow:2px 2px 0 var(--line)}
+  .pal-say.show{display:block}
+}
+
+/* ============ 主区 ============ */
+.main{display:flex;flex-direction:column;min-width:0;overflow:hidden}
+.topbar{min-height:58px;flex:none;display:flex;align-items:center;gap:10px;padding:8px 18px;border-bottom:var(--bd);background:var(--panel)}
+.crumb{font-size:12px;color:var(--mut);display:flex;align-items:center;gap:7px;white-space:nowrap;min-width:0}
+.crumb b{color:var(--ink);font-weight:800;font-size:13px;overflow:hidden;text-overflow:ellipsis}
+.spacer{flex:1}
+.view{padding:20px 22px 70px;overflow-y:auto;flex:1;min-width:0}
+.wrap{max-width:960px;margin:0 auto}
+
+.btn{display:inline-flex;align-items:center;gap:6px;border:2.5px solid var(--line);background:#fff;color:var(--ink);padding:6px 12px;font-size:12px;font-weight:700;box-shadow:3px 3px 0 var(--line);transition:transform .08s,box-shadow .08s;white-space:nowrap}
+.btn:hover{background:var(--paper)}
+.btn:active{transform:translate(3px,3px);box-shadow:0 0 0 var(--line)}
+.btn.primary{background:var(--r);color:#fff}
+.btn.primary:hover{background:#f2604a}
+.btn.yel{background:var(--y)}
+.btn.sm{padding:4px 9px;font-size:11px;box-shadow:2px 2px 0 var(--line)}
+.btn.sm:active{transform:translate(2px,2px);box-shadow:0 0 0 var(--line)}
+.btn[disabled]{opacity:.45;cursor:not-allowed;transform:none!important}
+.hamb{display:none}
+
+.pbanner{background:var(--ink);color:#FFF6E3;padding:10px 14px;display:flex;align-items:center;gap:12px;box-shadow:var(--sh);margin-bottom:14px;flex-wrap:wrap}
+.pbanner .no{font-family:var(--mono);background:var(--y);color:var(--ink);border:2.5px solid #FFF6E3;padding:2px 9px;font-weight:900;font-size:13px}
+.pbanner h1{margin:0;font-size:18px;letter-spacing:.06em;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.pbanner h1 .en{font-size:10px;color:#B8AE9C;letter-spacing:.22em}
+.pbanner .sub{flex-basis:100%;font-size:11.5px;color:#CFC5B2;line-height:1.7}
+
+.card{background:var(--panel);border:var(--bd);box-shadow:var(--sh)}
+.fields{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.fld{display:flex;align-items:center;gap:7px;background:var(--panel);border:2.5px solid var(--line);box-shadow:3px 3px 0 var(--line);padding:5px 9px;font-size:12px;font-weight:700}
+.fld label{font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:var(--mut)}
+.fld input,.fld select{border:2px solid var(--line);background:#fff;padding:3px 7px;font-size:12.5px;font-weight:600;outline:0;min-width:64px}
+.fld input:focus,.fld select:focus{background:#FFFBEA}
+
+.blk{margin-bottom:16px}
+.blk-h{display:flex;align-items:center;gap:8px;margin-bottom:7px;flex-wrap:wrap}
+.blk-h .sq{width:12px;height:12px;background:var(--r);border:2px solid var(--line);flex:none}
+.blk-h b{font-size:13.5px}
+.blk-h .cnt{font-family:var(--mono);font-size:10px;color:var(--mut);border:2px solid var(--line);background:#fff;padding:0 6px}
+.blk-h .grow{flex:1}
+.ta{width:100%;min-height:200px;border:var(--bd);background:#FFFEFA;padding:12px 14px;font-size:13px;line-height:1.95;resize:vertical;outline:0}
+.ta:focus{background:#FFFBEA;box-shadow:var(--sh)}
+.ta.big{min-height:280px}
+.ta.sm{min-height:130px}
+.ta::placeholder{color:#B9B09C;font-size:12px}
+
+.ai{margin-top:9px;border:2.5px dashed var(--line);background:var(--panel2);padding:9px 12px}
+.ai summary{font-size:11.5px;font-weight:800;cursor:pointer;outline:0;display:flex;align-items:center;gap:7px;user-select:none;flex-wrap:wrap}
+.ai summary .tag{font-family:var(--mono);font-size:9px;background:var(--ink);color:var(--y);padding:1px 6px;letter-spacing:.1em}
+.ai summary .tag.c{background:var(--b);color:#fff}
+.ai pre{white-space:pre-wrap;word-break:break-word;font-family:var(--mono);font-size:11px;line-height:1.85;color:var(--ink2);margin:9px 0 0;max-height:230px;overflow:auto;background:#fff;border:2px solid var(--line);padding:10px}
+.ai .foot{display:flex;gap:9px;align-items:center;margin-top:9px;flex-wrap:wrap}
+.ai .foot span{font-size:11px;color:var(--mut);flex:1;min-width:180px;line-height:1.7}
+.ai-edit{margin-top:9px}
+.ai-edit .legend{font-size:10px;color:var(--mut);font-family:var(--mono);margin:6px 0;line-height:1.8;word-break:break-all}
+
+.snav{display:flex;gap:9px;align-items:center;margin-top:4px;flex-wrap:wrap}
+
+.guide{padding:0}
+.gstep{display:flex;gap:11px;padding:11px 14px;border-bottom:2.5px dashed var(--line)}
+.gstep:last-child{border-bottom:0}
+.gstep .gn{width:24px;height:24px;flex:none;background:var(--ink);color:var(--y);display:grid;place-items:center;font-family:var(--mono);font-weight:900;font-size:12px;border:2px solid var(--line)}
+.gstep .gt{flex:1;min-width:0;font-size:12.5px;line-height:1.85;color:var(--ink2)}
+.gstep .gt b{color:var(--ink)}
+.copyline{margin-top:12px;border:2.5px solid var(--line);background:var(--y);padding:9px 12px;display:flex;gap:9px;align-items:center;flex-wrap:wrap;box-shadow:3px 3px 0 var(--line)}
+.copyline code{flex:1;min-width:200px;font-family:var(--mono);font-size:11.5px;background:#fff;border:2px solid var(--line);padding:6px 9px;overflow:auto;white-space:nowrap}
+
+/* ---- 素材回收站 ---- */
+.drop{border:2.5px dashed var(--line);background:var(--panel2);padding:10px 12px;font-size:11.5px;color:var(--mut);text-align:center;cursor:pointer;margin-bottom:9px;user-select:none}
+.drop:hover{background:#FFFBEA;color:var(--ink2)}
+.agrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:10px}
+.aitem{border:2.5px solid var(--line);background:#fff;box-shadow:3px 3px 0 var(--line);display:flex;flex-direction:column}
+.amedia{height:104px;background:var(--panel2);border-bottom:2.5px solid var(--line);display:grid;place-items:center;overflow:hidden;position:relative}
+.amedia img{width:100%;height:100%;object-fit:cover}
+.amedia video{width:100%;height:100%;object-fit:contain;background:#000}
+.amedia .miss{font-size:10.5px;color:var(--mut);font-family:var(--mono);text-align:center}
+.amedia .knd{position:absolute;left:0;top:0;font-family:var(--mono);font-size:9px;background:var(--ink);color:var(--y);padding:1px 6px}
+.aname{font-size:10.5px;padding:5px 7px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:var(--mono);color:var(--ink2)}
+.aops{display:flex;gap:5px;padding:6px 7px 7px}
+.aops .btn{flex:1;justify-content:center;padding:3px 4px;font-size:10px}
+
+/* ---- 首页日历 ---- */
+.homegrid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:14px;align-items:start}
+.cal-h{display:flex;align-items:center;gap:8px;padding:10px 12px;border-bottom:var(--bd);background:var(--ink);color:#FFF6E3;flex-wrap:wrap}
+.cal-h b{font-size:15px;letter-spacing:.05em}
+.cal-h .lun{font-size:10.5px;color:#B8AE9C;font-family:var(--mono);flex:1;text-align:right;min-width:120px}
+.cal-dow{display:grid;grid-template-columns:repeat(7,1fr);border-bottom:2.5px solid var(--line);background:var(--panel2)}
+.cal-dow span{text-align:center;font-family:var(--mono);font-size:10.5px;padding:5px 0;color:var(--mut);border-right:2px dashed var(--line)}
+.cal-dow span:last-child{border-right:0}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr)}
+.cal-d{min-height:56px;border-right:2px dashed var(--line);border-bottom:2px dashed var(--line);padding:4px 5px;cursor:pointer;position:relative;background:#fff}
+.cal-d:nth-child(7n){border-right:0}
+.cal-d:hover{background:#FFFBEA}
+.cal-d.dim{opacity:.35;cursor:default}
+.cal-d.today{background:var(--y)}
+.cal-d.sel{outline:3px solid var(--r);outline-offset:-3px}
+.cal-d .dn{font-family:var(--mono);font-weight:700;font-size:13px}
+.cal-d .ln{font-size:9px;color:var(--mut);line-height:1.3}
+.cal-d.today .ln{color:#6b5f2a}
+.cal-d .ed{position:absolute;right:4px;top:4px;width:7px;height:7px;background:var(--r);border:1.5px solid var(--line)}
+.ev-item{display:flex;gap:8px;align-items:center;padding:7px 12px;border-bottom:2px dashed var(--line);font-size:12.5px}
+.ev-item:last-child{border-bottom:0}
+.ev-item .et{font-family:var(--mono);font-size:10.5px;background:var(--ink);color:var(--y);padding:1px 6px;flex:none}
+.ev-item .ex{flex:1;min-width:0;word-break:break-all}
+.ev-add{display:flex;gap:7px;padding:10px 12px;border-top:var(--bd);background:var(--panel2);flex-wrap:wrap;align-items:center}
+.ev-add input[type=time]{border:2px solid var(--line);background:#fff;padding:4px 6px;font-size:12px;font-family:var(--mono)}
+.ev-add input[type=text]{flex:1;min-width:130px;border:2.5px solid var(--line);background:#fff;padding:5px 9px;font-size:12.5px;outline:0}
+.stat{padding:10px 13px;border-bottom:2px dashed var(--line);display:flex;justify-content:space-between;font-size:12px}
+.stat:last-child{border-bottom:0}
+.stat b{font-family:var(--mono)}
+
+.toast{position:fixed;left:50%;bottom:34px;transform:translate(-50%,26px);opacity:0;pointer-events:none;background:var(--ink);color:var(--y);padding:10px 18px;font-size:12px;font-weight:700;border:2.5px solid #FFF6E3;box-shadow:4px 4px 0 rgba(0,0,0,.35);transition:.25s;z-index:300;font-family:var(--mono);max-width:88vw}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+.scrim{display:none;position:fixed;inset:0;z-index:129;background:rgba(31,27,22,.45)}
+
+@media(max-width:1020px){
+  .app{grid-template-columns:minmax(0,1fr)}
+  .sidebar{position:fixed;left:0;top:0;bottom:0;width:290px;max-width:88vw;z-index:131;background:#FFFDF6;transform:translateX(-103%);transition:transform .25s;box-shadow:8px 0 0 rgba(31,27,22,.3)}
+  .sidebar.open{transform:none}
+  .scrim{display:block}
+  .scrim.on{opacity:1;pointer-events:auto}
+  .hamb{display:inline-flex;padding:5px 7px}
+  .topbar{padding:8px 11px;gap:7px}
+  .topbar .btn .t{display:none}
+  .topbar .btn{padding:6px 8px}
+  .view{padding:15px 12px 80px}
+  .pbanner h1{font-size:16px}
+  .ta{min-height:170px}
+  .homegrid{grid-template-columns:minmax(0,1fr)}
+}
+@media(max-width:480px){
+  .crumb span{display:none}
+  .blk-h b{font-size:12.5px}
+  .cal-d{min-height:48px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-mark"><i style="background:#FFD23F"></i><i style="background:#E8543F"></i><i style="background:#4E9A51"></i><i style="background:#FFF6E3"></i></div>
+      <div class="brand-txt"><b>漫剧工作台</b><span>PIXEL PIPELINE</span></div>
+    </div>
+    <div class="nav-label"><span>流水线 PIPELINE</span></div>
+    <div id="nav"></div>
+    <details class="memo" id="memoBox">
+      <summary><span>备忘录 MEMO</span><span><button class="vopen" data-act="view-open" data-view="memo" title="在主区展开">展开 ↗</button> <span id="memoCnt">0条</span></span></summary>
+      <div class="m-list" id="memoList"></div>
+      <div class="m-compose">
+        <input class="m-title-input" id="memoTitle" placeholder="给这条起个名字…" maxlength="60">
+        <textarea id="memoIn" placeholder="内容写在这里，可以很长，点标题才展开…"></textarea>
+        <div class="m-add"><span style="flex:1"></span><button class="btn sm" data-act="memo-add">＋ 添加</button></div>
+      </div>
+      <div class="m-hint">黄底红杠 = 自动挑出的重点词</div>
+    </details>
+    <details class="tasks" id="taskBox">
+      <summary><span>任务 QUEST</span><span><button class="vopen" data-act="view-open" data-view="tasks" title="在主区展开">展开 ↗</button> <span id="tkCnt">0/0</span></span></summary>
+      <div class="tk-list" id="tkList"></div>
+      <div class="tk-add">
+        <input id="tkIn" placeholder="自己加一条任务…">
+        <button class="btn sm" data-act="tk-add">＋</button>
+      </div>
+    </details>
+    <div class="side-foot">
+      <div class="prog"><span>进度</span><div class="bar"><i id="progBar"></i></div><span id="progN">0/8</span></div>
+      <div class="save"><span class="dot" id="saveDot"></span><span id="saveTxt">自动保存 · 关掉再打开还在</span></div>
+      <div class="io">
+        <button class="btn sm" data-act="export">导出md</button>
+        <button class="btn sm" data-act="backup">备份</button>
+        <button class="btn sm" data-act="restore" title="导入备份">恢复</button>
+      </div>
+      <div class="fun-bar" id="funBar">
+        <button data-act="dice" title="随机抽一个爆款元素并复制">🎲 灵感</button>
+        <button data-act="timer" id="timerBtn" title="25 分钟专注计时，点击开始 / 暂停">⏱ 专注</button>
+        <button data-act="fun-toggle" id="funBtn" title="关闭趣味元素">趣味:开</button>
+      </div>
+    </div>
+  </aside>
+
+  <button class="fun-restore" id="funRestore" data-act="fun-toggle" title="重新开启趣味元素">趣味:关</button>
+  <div class="pal" id="pal">
+    <div class="pal-say" id="palSay">嘿！写完一步就点它，会有惊喜 <span class="px">点小墨换个说法</span></div>
+    <button class="pal-body" data-act="pal-talk" title="点小墨说说话">
+      <svg width="52" height="52" viewBox="0 0 16 16" shape-rendering="crispEdges" aria-label="像素猫小墨">
+        <rect x="2" y="1" width="3" height="3" fill="#FFD23F" stroke="#2b2318" stroke-width=".7"/>
+        <rect x="11" y="1" width="3" height="3" fill="#FFD23F" stroke="#2b2318" stroke-width=".7"/>
+        <rect x="2" y="3" width="12" height="11" fill="#FFD23F" stroke="#2b2318" stroke-width=".8"/>
+        <rect x="4" y="7" width="2" height="2" fill="#2b2318"/>
+        <rect x="10" y="7" width="2" height="2" fill="#2b2318"/>
+        <rect x="7" y="10" width="2" height="1.5" fill="#E8543F"/>
+        <rect x="5" y="12" width="6" height="1" fill="#2b2318"/>
+        <rect x="0" y="12" width="2" height="1" fill="#2b2318"/>
+        <rect x="14" y="12" width="2" height="1" fill="#2b2318"/>
+      </svg>
+    </button>
+  </div>
+
+  <div class="main">
+    <header class="topbar">
+      <button class="btn hamb" data-act="drawer" aria-label="打开菜单"><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square"><path d="M3 5.5h14M3 10h14M3 14.5h14"/></svg></button>
+      <div class="crumb"><span>漫剧工作台</span><span style="opacity:.4">/</span><b id="crumb">首页</b></div>
+      <div class="spacer"></div>
+      <button class="btn sm" data-act="copy-step" id="btnCopyStep" title="复制这一步全部已写内容"><svg width="13" height="13" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><rect x="6" y="6" width="10" height="10"/><path d="M13 4H4v9"/></svg><span class="t">复制本步内容</span></button>
+      <button class="btn sm yel" data-act="export" title="汇总导出 markdown"><svg width="13" height="13" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M10 3v9M6.5 9.5L10 13l3.5-3.5"/><path d="M3.5 15.5v1.5h13v-1.5"/></svg><span class="t">导出md</span></button>
+    </header>
+    <main class="view" id="view"><div class="wrap" id="wrap"></div></main>
+  </div>
+</div>
+
+<div class="scrim" id="scrim" data-act="drawer-close"></div>
+<div class="toast" id="toast"></div>
+<input type="file" id="fileImg" accept="image/*" multiple style="display:none">
+<input type="file" id="fileVid" accept="video/*,image/*" multiple style="display:none">
+<input type="file" id="fileIn" accept=".json,application/json" style="display:none">
+
+<script>
+/* ============================================================
+   漫剧工作台 · 像素版
+   数据 KEY = mojli_pix_v1
+   {cur, meta, blocks, tasks, custom, memos[], events, tpl, assets, savedAt}
+   素材文件存 IndexedDB（mojli_pix_assets / kv），DB 里只存清单
+   ============================================================ */
+
+/* ---------- AI 提示词模板（可在界面里逐条改写，不是死的） ---------- */
+const P_RAW = `你是一位资深短剧编剧，熟悉竖屏漫剧的爆款结构。下面是作者给的原始素材和关键词：
+
+【原始素材与关键词】
+{{raw}}
+
+请以专业编剧的身份完成两件事：
+1. 提炼故事核心：一句话说清「谁 + 想要什么 + 被什么拦住」（30 字内）；
+2. 在作者给的关键词之外，主动补充 2~4 个专业关键词（例如：黄金三秒钩子、身份反差、情绪反转链、暗线悬念、记忆点道具），让故事更完整、更有爆款相。
+
+输出格式：
+核心一句话：…
+补充关键词：…
+推荐类型标签：…`;
+
+const P_OUTLINE = `你是一位有 15 年经验的编剧。注意：现在只需要故事大纲，先不要分集、不要定集数——体量后面再切。
+
+请根据以下素材输出专业故事大纲：
+
+【素材与核心】
+{{raw}}
+
+要求：
+1. 一句话核心：谁 + 想要什么 + 被什么拦住；
+2. 主线三幕：开场钩子（前 3 秒的异常画面）→ 中段升级（至少 3 次反转，一次比一次狠）→ 高潮与结局；
+3. 暗线悬念：一条贯穿全片的谜团，标注它每次露头的大致位置；
+4. 关键情节点 8~12 个，每个一句话，按顺序排好；
+5. 人物关系：谁欠谁、谁瞒着谁、谁会反水；
+6. 在作者关键词之外补充的元素，用 ★ 标出。
+
+只输出大纲，不要解释。`;
+
+const P_STORY = `你是专业短剧编剧，擅长把大纲扩写成可直接开拍的分场故事。请把下面的大纲扩写成完整故事：
+
+【故事大纲】
+{{outline}}
+
+要求：
+1. 以「场」为单位：场 N · 地点 · 时间；每场必须有冲突或信息增量，删掉纯过渡场；
+2. 心理描写全部改写成可见动作（不写"他很紧张"，写"他放茶盏时磕了一下"）；
+3. 台词口语化，每句不超过 18 字；
+4. 每场结尾留一个钩子；
+5. 保持与大纲一致的人物与暗线，不擅自新增主角。
+
+直接输出故事正文。`;
+
+const P_SCRIPT = `你是竖屏漫剧编剧。注意：豆包 / 即梦单次视频生成最长只有 15 秒，所以剧本必须按「≤15 秒的段落」来组织，方便逐段生成、逐段替换。
+
+请把下面的故事写成完整剧本（先不分集，写完整体量后再往下切）：
+
+【完整故事】
+{{story}}
+
+要求：
+1. 目标总时长 {{meta.mins}} 分钟（约 {{meta.secs}} 秒，拆成 N 个不超过 15 秒的段落）；
+2. 标准格式：
+   场 1 · 夜 · 衙门后院
+   ▶ 段落01（0-8s）景别：中景；运镜：缓推；画面：…；台词：…
+   ▶ 段落02（8-15s）景别：特写；运镜：固定；画面：…；台词：…
+3. 每段只含一个运镜（推 / 拉 / 摇 / 移 / 固定 五选一），不要混用；
+4. 台词每秒 3~4 字（紧张处最多 5 字），超时先删形容词再删整句；
+5. 段首 3 秒必须有动作或异常画面，不要静止交代背景；
+6. 结尾留 3~5 秒钩子空镜，不要被台词填满。
+
+只输出剧本。`;
+
+const P_SEG = `你是专业漫剧分镜师，非常熟悉豆包、即梦等 AI 视频工具的生成逻辑（首帧锁脸、单段单运镜、5 秒最稳）。请把剧本拆成编号分镜序列：
+
+【剧本】
+{{script}}
+
+要求：
+1. 每组不超过 15 秒——强烈建议按 5 秒一段拆（一段崩了只废 5 秒，重试成本低）；
+2. 一段只做一个运镜；
+3. 编号格式：SEG-01、SEG-02……连续编号，方便逐条复制进视频工具、逐条对号；
+4. 每段一行：SEG-01｜秒数｜景别｜画面（主体 + 动作 + 表情 + 环境，一句话写清）｜台词（没有就写 —）；
+5. 画面描述里用角色名点明出场人物，与前文设定保持一致；
+6. 台词不超过 18 字（约 6~8 秒，天然落在安全区）。
+
+只输出编号序列。`;
+
+const P_IMG_CHAR = `你是 AI 生图提示词工程师。根据剧本，为每个主要角色写一条「人物设定图」提示词（中文）：
+
+【剧本】
+{{script}}
+
+硬性要求：
+1. 只描述主体：年龄感、发型发色、五官特征、身形比例、服装、标志物（配饰 / 伤疤 / 随身道具）；
+2. 背景只许写「纯白背景」，禁止任何环境、光影、氛围词；
+3. 一名角色一条，每条以「角色名｜」开头；
+4. 画风统一为：{{meta.look}}。
+
+示例：沈砚｜二十岁男性捕快，束发高马尾，剑眉薄唇，身形挺拔，玄色飞鱼服，左手戴半截黑手套｜纯白背景`;
+
+const P_IMG_EXPR = `你是 AI 生图提示词工程师。根据人物设定，为主角们写「表情组 + 换装 + 发型变体」提示词：
+
+【人物设定图】
+{{imgChar}}
+
+要求：
+1. 纯白背景，禁止环境与光影词；
+2. 每名主角：6 个表情（怒 / 喜 / 悲 / 惊 / 惧 / 冷峻）各一条、换装 2 套各一条、发型变体 2 款各一条；
+3. 每条以「角色名·类别｜」开头，方便批量生成后逐条对号。`;
+
+const P_IMG_SCENE = `你是 AI 生图提示词工程师。从剧本中提取全部场景（地点），每个场景写一条生图提示词：
+
+【剧本】
+{{script}}
+
+要求：
+1. 只写场景结构与陈设：空间布局 + 3~5 件关键道具（桌椅、灯烛、屏风这类能讲故事的）；
+2. 背景只许写「纯白背景」，禁止氛围、天气、光影词（氛围交给视频阶段打光）；
+3. 每条以「场景名｜」开头；
+4. 画风统一为：{{meta.look}}。`;
+
+const P_IMG_PROP = `你是 AI 生图提示词工程师。从剧本中提取关键道具（推动剧情的物件），每个道具写一条特写提示词：
+
+【剧本】
+{{script}}
+
+要求：
+1. 主体 + 材质 + 特征细节（划痕、纹路、包浆这类记忆点）；
+2. 纯白背景，禁止环境词；
+3. 每条以「道具名｜」开头。`;
+
+const P_REF_VIEW = `你是 AI 生图专家。先用上面的「人物设定图」提示词为每个角色生成参考图（满意后锁定，作为该角色全片唯一参考、全程不换），再用下面的三视图指令生成标准设定图：
+
+【人物设定图】
+{{imgChar}}
+
+三视图指令（复制后替换角色名即可）：
+「角色名」三视图设定图：正立面、侧立面、背立面三个角度并排展示，同高同比例、间距均匀；画面右侧生成该角色头部特写；纯白背景；全身入镜、双脚完整可见；标准站姿，双手自然垂下，平视镜头；人物比例 7.5 头身；线条干净；画风：{{meta.look}}；画面中不要出现任何文字、水印、边框或背景装饰。`;
+
+const P_REF_PROP = `你是 AI 生图专家。根据道具设定，为每个道具生成多角度特写：
+
+【道具特写】
+{{imgProp}}
+
+要求：同一道具的正面、45° 侧面、俯视三个角度并排展示，纯白背景，三个角度比例一致、材质与细节完全相同（与道具设定图严格一致）；画面中不要出现任何文字或水印。`;
+
+const P_VIDEO = `你是 AI 视频生成专家（豆包 / 即梦）。根据编号分镜，逐段输出可直接复制的视频生成提示词：
+
+【分镜序列】
+{{seg}}
+
+每段输出格式（一行一条，直接复制进生成框）：
+SEG-01｜{{meta.ratio}}｜全能参考：女主@【女主三视图照片】、男主@【男主三视图照片】、场景@【对应场景照片】；画面：【该 SEG 的画面描述】；运镜：【推/拉/摇/移/固定】；表情生动，动作富有张力，中文台词，无背景音乐，无字幕，4K 超清。
+
+硬性规则：
+1. 画面一致性：人物一律引用三视图 / 参考图（全片不换），场景一律引用场景图（全片不换）；
+2. 一段只用一个运镜，时长不超过 15 秒（建议 5 秒）；
+3. 台词照抄分镜里的原文，不要现场发挥；
+4. 「@照片」处替换成你在工具里实际上传的参考图（可直接从本工作台素材区复制图片）；
+5. 需要角色开口说话的分段，在全能参考后追加声音引用：用「角色名」的声音@音频。`;
+
+const P_SHARP = `将成片输出为 4K 分辨率、60fps；整体锐化 +15、对比 +10、饱和 +8；关闭降噪涂抹感，保留皮肤质感与线条细节；字幕与描边边缘清晰无锯齿；若平台二次压缩导致发糊，上传前用剪映「画质增强」或 Topaz 超分再处理一遍。`;
+
+const GUIDE_VOICE = [
+  ['下载一段最满意的视频（选人物台词最密集的一段，10~30 秒就够，不用太长）'],
+  ['把视频导入<b>剪映</b>，截取人物说话最密的那一段'],
+  ['右键片段 → <b>分离音频</b>，然后删掉画面，只留声音'],
+  ['导出为 <b>mp3</b>（音频采样率选 48000Hz 更佳）'],
+  ['回到豆包 / 即梦，把这段 mp3 上传为<b>「声音参考」</b>'],
+  ['在视频提示词末尾加一句：<b>用「角色名」的声音@音频</b>——之后这个角色全片都是同一个声音']
+];
+const GUIDE_EDIT = [
+  ['<b>粗剪</b>：按 SEG 编号顺序铺满时间线，先卡节奏再抠细节（动作点、台词重音对鼓点）'],
+  ['<b>声音</b>：人声放主轨，音量 -6dB 左右；BGM 压到 -20dB 以下，开启「自动闪避」让人声始终清晰'],
+  ['<b>转场</b>：全程硬切为主；只有情绪大转折才用 8 帧黑场或白闪，花哨转场一律不要'],
+  ['<b>调色</b>：先统一所有素材的曝光与白平衡，再套风格 LUT（漫剧建议高饱和、轻胶片感）'],
+  ['<b>字幕</b>：一行不超过 12 字；关键词换色 + 描边，出字节奏跟着台词重音走'],
+  ['<b>导出</b>：分辨率 4K、帧率 60fps、码率选「更高」；素材不够清晰就先超分再剪（见下方指令）']
+];
+
+/* ---------- 热门画风 ---------- */
+const HOT_LOOKS = ['国风二次元','日系赛璐璐','厚涂电影感','3D黏土渲染','Q版萌系','水墨淡彩','复古像素风','写实真人感'];
+
+/* ---------- 流水线定义 ---------- */
+const STEPS = [
+  {id:'raw', t:'原始素材', en:'SOURCE',
+   tip:'把小说片段、灵感、聊天记录、参考全粘进来；末尾另起一行写关键词（顿号分隔）。越原始越好，不用整理。',
+   blocks:[{k:'raw', label:'素材 + 关键词', big:1, ai:P_RAW}]},
+  {id:'outline', t:'大纲', en:'OUTLINE',
+   tip:'只要故事大纲，先不分集不定集数——三幕结构、情节点、暗线、人物关系。体量后面再切。',
+   blocks:[{k:'outline', label:'故事大纲（可编辑）', big:1, ai:P_OUTLINE}]},
+  {id:'story', t:'完整故事', en:'STORY',
+   tip:'把大纲扩写成完整故事，分场、动作化、口语化。这是剧本的原料。',
+   blocks:[{k:'story', label:'完整故事（可编辑）', big:1, ai:P_STORY}]},
+  {id:'script', t:'剧本', en:'SCRIPT',
+   tip:'写的是完整剧本（总量 X 分钟），按 ≤15 秒段落组织，后面再切成集和分镜。',
+   fields:[{key:'mins', label:'总时长(分钟)', type:'number', def:'1'}],
+   blocks:[{k:'script', label:'完整剧本（可编辑）', big:1, ai:P_SCRIPT}]},
+  {id:'seg', t:'分镜序列', en:'STORYBOARD',
+   tip:'15 秒为一组（建议 5 秒一段），SEG 连续编号，是给豆包 / 即梦的视频提示词。',
+   blocks:[{k:'seg', label:'编号分镜（可编辑）', big:1, ai:P_SEG}]},
+  {id:'img', t:'生图提示词', en:'IMG PROMPTS',
+   tip:'按类别生成：人物设定图 / 表情换装发型 / 场景 / 道具特写。纯白背景，不写背景描述词。',
+   blocks:[
+     {k:'imgChar', label:'人物设定图', ai:P_IMG_CHAR},
+     {k:'imgExpr', label:'表情 · 换装 · 发型', ai:P_IMG_EXPR},
+     {k:'imgScene', label:'场景图', ai:P_IMG_SCENE},
+     {k:'imgProp', label:'道具特写', ai:P_IMG_PROP}]},
+  {id:'ref', t:'参考图·三视图', en:'CHAR SHEET',
+   tip:'先用设定图生成参考图并锁定，再出三视图（正 / 侧 / 背 + 右侧头像特写）。画风用下拉选热门的，也可以自定义。',
+   fields:[{key:'look', label:'画风', type:'look'}],
+   blocks:[
+     {k:'refView', label:'三视图生成指令', big:1, ai:P_REF_VIEW},
+     {k:'refProp', label:'道具多角度特写', ai:P_REF_PROP}],
+   assets:'img'},
+  {id:'video', t:'视频提示词', en:'VIDEO',
+   tip:'选画幅后逐段复制 SEG 模板，把 @照片 换成实际参考图；人物三视图与场景全片不换，保证画面一致性。',
+   fields:[{key:'ratio', label:'画幅', type:'select', def:'竖屏 9:16', opts:['竖屏 9:16','横屏 16:9']}],
+   blocks:[{k:'vidTpl', label:'视频生成模板（逐段复制）', big:1, ai:P_VIDEO}],
+   assets:'vid'},
+  {id:'voice', t:'声音一致性', en:'VOICE',
+   tip:'六步操作：剪映分离音频 → mp3 → 声音参考 → 「谁的声音@音频」。',
+   guide:GUIDE_VOICE,
+   copyline:{txt:'用「角色名」的声音@音频，台词照读 SEG-xx，语速自然，情绪匹配画面。'}},
+  {id:'edit', t:'剪辑成片', en:'EDITING',
+   tip:'百万大师级流程：粗剪卡点 → 声音闪避 → 硬切 → 调色 → 字幕 → 4K60 导出。',
+   guide:GUIDE_EDIT,
+   blocks:[{k:'editSharp', label:'清晰度提升指令（可复制）', ai:P_SHARP}]}
+];
+const HOME = {id:'home', t:'首页', en:'HOME'};
+const VIEWS = [HOME].concat(STEPS);
+const META_DEF = {mins:'1', look:'国风二次元', ratio:'竖屏 9:16'};
+const CONTENT_STEPS = STEPS.filter(s=>s.blocks&&s.blocks.length);
+
+/* ---------- 任务 ---------- */
+const TASK_DEFS = [
+  {id:'t1',  after:null,      txt:'① 粘贴素材，让 AI 提炼核心 + 补充关键词'},
+  {id:'t2',  after:'raw',     txt:'② 让 AI 生成故事大纲（不分集）'},
+  {id:'t3',  after:'outline', txt:'③ 把大纲扩写成完整故事'},
+  {id:'t4',  after:'story',   txt:'④ 写完整剧本（{{meta.mins}} 分钟 · 15 秒分段）'},
+  {id:'t5',  after:'script',  txt:'⑤ 拆成 SEG 编号分镜（≤15 秒/段）'},
+  {id:'t6',  after:'seg',     txt:'⑥ 生图提示词：人物 / 表情换装 / 场景 / 道具'},
+  {id:'t7',  after:'imgChar', txt:'⑦ 生成参考图 + 三视图（正/侧/背 + 头像特写）'},
+  {id:'t8',  after:'refView', txt:'⑧ 逐段生成视频（全能参考 + 4K 参数）'},
+  {id:'t9',  after:'vidTpl',  txt:'⑨ 声音一致性：剪映分离 mp3 → 声音参考'},
+  {id:'t10', after:'vidTpl',  txt:'⑩ 剪辑成片：粗剪 → 调色 → 4K60 导出'}
+];
+
+/* ---------- 存储 ---------- */
+const KEY='mojli_pix_v1';
+let DB={cur:0, meta:{}, blocks:{}, tasks:{}, custom:[], memos:[], events:{}, tpl:{}, assets:[], fun:true, savedAt:0};
+let timer=null;
+
+function load(){
+  try{
+    const raw=localStorage.getItem(KEY);
+    if(raw) DB=Object.assign(DB,JSON.parse(raw));
+  }catch(e){ DB={cur:0,meta:{},blocks:{},tasks:{},custom:[],memos:[],events:{},tpl:{},assets:[],fun:true,savedAt:0}; }
+  if(typeof DB.fun!=='boolean') DB.fun=true;
+  ['meta','blocks','tasks','events','tpl'].forEach(k=>{ if(!DB[k]||typeof DB[k]!=='object'||Array.isArray(DB[k])) DB[k]={}; });
+  if(!Array.isArray(DB.custom)) DB.custom=[];
+  if(!Array.isArray(DB.assets)) DB.assets=[];
+  /* 旧版整段文字 memo 自动迁成第一条 */
+  if(!Array.isArray(DB.memos)) DB.memos=[];
+  if(typeof DB.memo==='string'&&DB.memo.trim()){ DB.memos.push({id:'m'+Date.now().toString(36),title:autoTitle(DB.memo),txt:DB.memo.trim(),done:false}); }
+  delete DB.memo;
+  normalizeMemos();
+  DB.cur=Math.min(VIEWS.length-1,Math.max(0,Number(DB.cur)||0));
+  STEPS.forEach(s=>(s.blocks||[]).forEach(b=>{ if(typeof DB.blocks[b.k]!=='string') DB.blocks[b.k]=''; }));
+}
+function persist(){
+  DB.savedAt=Date.now();
+  try{ localStorage.setItem(KEY,JSON.stringify(DB)); setSave('ok'); }
+  catch(e){ setSave('fail'); }
+}
+function queueSave(){ setSave('wait'); clearTimeout(timer); timer=setTimeout(persist,600); }
+function flush(){ if(timer){ clearTimeout(timer); timer=null; persist(); } }
+function setSave(st){
+  const d=$('#saveDot'), t=$('#saveTxt');
+  d.className='dot';
+  if(st==='ok'){ d.classList.add('ok'); t.textContent='已保存 '+hhmm(DB.savedAt)+' · 存在本机浏览器'; }
+  else if(st==='wait'){ d.classList.add('wait'); t.textContent='保存中…'; }
+  else if(st==='fail'){ d.classList.add('wait'); t.textContent='保存失败 · 空间可能满了，先点「备份」'; }
+  else t.textContent='自动保存 · 关掉再打开还在';
+}
+function hhmm(ts){ if(!ts) return '—'; const d=new Date(ts),p=n=>String(n).padStart(2,'0'); return p(d.getHours())+':'+p(d.getMinutes()); }
+
+/* ---------- 工具 ---------- */
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const $=s=>document.querySelector(s);
+function toast(m){ const el=$('#toast'); el.textContent=m; el.classList.add('on'); clearTimeout(el._t); el._t=setTimeout(()=>el.classList.remove('on'),2000); }
+function copyText(txt,msg){
+  const done=()=>toast(msg||'已复制 ✓');
+  if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(done).catch(()=>fb());
+  else fb();
+  function fb(){ const ta=document.createElement('textarea'); ta.value=txt; ta.style.cssText='position:fixed;opacity:0'; document.body.appendChild(ta); ta.select(); try{document.execCommand('copy');done();}catch(e){toast('复制失败，请手动选择');} ta.remove(); }
+}
+function metaNow(){
+  const m=Object.assign({},META_DEF,DB.meta);
+  m.secs=String(Math.round((parseFloat(m.mins)||1)*60));
+  return m;
+}
+function tplOf(k){ return (typeof DB.tpl[k]==='string'&&DB.tpl[k].trim())?DB.tpl[k]:null; }
+function tplFill(s){
+  const m=metaNow();
+  return String(s||'').replace(/\{\{meta\.(\w+)\}\}/g,(mm,k)=>String(m[k]!==undefined?m[k]:''))
+                      .replace(/\{\{(\w+)\}\}/g,(mm,k)=>{
+                        if(Object.prototype.hasOwnProperty.call(m,k)) return String(m[k]||'');
+                        const v=String(DB.blocks[k]||'');
+                        return v.trim()?v.trim():'（这一步还没写）';
+                      });
+}
+const blkVal=k=>String(DB.blocks[k]||'');
+const blkFilled=k=>blkVal(k).trim().length>0;
+const stepFilled=s=>!!s.blocks&&s.blocks.every(b=>blkFilled(b.k));
+
+/* ---------- 趣味元素：像素猫小墨 / 灵感骰子 / 专注计时 / 完成彩纸 ---------- */
+const DICE=['黄金三秒钩子','身份反差','情绪反转链','暗线悬念','记忆点道具','倒计时压迫','误认错位','临场抉择','代价交换','视觉母题','反常识开场','未解之物','镜像对照','最后一秒反转','熟悉场景里的异常','小人物高光'];
+const PAL_TIPS=[
+ '写不出来？先写一句最烂的，再改好它。',
+ '一次只做一步，流水线会替你记着其它。',
+ '15 秒一段，崩了也只废 5 秒。',
+ '台词写不下去，就让人物先做个动作。',
+ '记得点「备份」，我会帮你看好进度。',
+ '大纲别急着分集，故事先立住。',
+ '画面一致性靠三视图，别偷懒换脸。',
+ '累了就按「专注」，25 分钟后再回来。'
+];
+let palIdx=0, lastDice=-1, prevDone=null;
+let focusLeft=25*60, focusTimer=null;
+let palSayTimer=null;
+function palSay(html){
+  const p=$('#palSay'); if(!p) return;
+  p.innerHTML=html+'<span class="px">点小墨换个说法</span>';
+  if(window.innerWidth<=900){
+    p.classList.add('show');
+    clearTimeout(palSayTimer);
+    palSayTimer=setTimeout(()=>p.classList.remove('show'),4200);
+  }
+}
+function applyFun(){
+  const pal=$('#pal'), bar=$('#funBar'), btn=$('#funBtn'), res=$('#funRestore');
+  if(pal) pal.classList.toggle('hide',!DB.fun);
+  if(res) res.classList.toggle('on',!DB.fun);
+  if(bar) bar.querySelectorAll('button').forEach(b=>{
+    if(b===btn) return;
+    b.style.display=DB.fun?'':'none';
+  });
+  if(btn){ btn.textContent='趣味:'+(DB.fun?'开':'关'); btn.title=DB.fun?'关闭趣味元素':'重新开启趣味元素'; }
+  if(!DB.fun&&focusTimer){ clearInterval(focusTimer); focusTimer=null; focusLeft=25*60; }
+}
+function palTalk(){
+  palIdx=(palIdx+1)%PAL_TIPS.length;
+  palSay('小墨：'+PAL_TIPS[palIdx]);
+}
+function rollDice(){
+  let i; do{ i=Math.floor(Math.random()*DICE.length); }while(i===lastDice);
+  lastDice=i;
+  palSay('🎲 今日灵感：<b>'+DICE[i]+'</b><br>已复制，粘到任意步骤里试试');
+  copyText(DICE[i],'灵感「'+DICE[i]+'」已复制 ✓');
+}
+function toggleTimer(){
+  const btn=$('#timerBtn'); if(!btn) return;
+  if(focusTimer){
+    clearInterval(focusTimer); focusTimer=null;
+    btn.textContent='⏱ 继续 '+mmss(focusLeft); btn.classList.remove('on');
+    palSay('小墨：先歇会儿，进度我看着呢。'); return;
+  }
+  if(focusLeft<=0) focusLeft=25*60;
+  btn.textContent='⏱ 专注 '+mmss(focusLeft); btn.classList.add('on');
+  palSay('小墨：专注 25 分钟，别切出去刷手机啦。');
+  focusTimer=setInterval(()=>{
+    focusLeft--;
+    const b=$('#timerBtn'); if(b) b.textContent='⏱ 专注 '+mmss(focusLeft);
+    if(focusLeft<=0){
+      clearInterval(focusTimer); focusTimer=null; focusLeft=25*60;
+      if(b){ b.textContent='⏱ 专注'; b.classList.remove('on'); }
+      palSay('小墨：时间到！起来动一动 🎉');
+      toast('专注完成！休息一下吧'); celebrate();
+    }
+  },1000);
+}
+function mmss(s){ return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0'); }
+function celebrate(){
+  if(!DB.fun) return;
+  const cs=['#FFD23F','#E8543F','#4E9A51','#4E86C0','#F4BFD4','#FFF6E3'];
+  for(let i=0;i<26;i++){
+    const d=document.createElement('i');
+    d.className='confetti';
+    d.style.left=(Math.random()*96)+'vw';
+    d.style.background=cs[i%cs.length];
+    d.style.animationDelay=(Math.random()*.45)+'s';
+    d.style.transform='rotate('+Math.random()*360+'deg)';
+    document.body.appendChild(d);
+    setTimeout(()=>d.remove(),2700);
+  }
+}
+
+/* ---------- 渲染：左栏 ---------- */
+function renderNav(){
+  const doneFlags=VIEWS.map((s,i)=>i>0&&s.blocks&&s.blocks.length?stepFilled(s):false);
+  $('#nav').innerHTML=VIEWS.map((s,i)=>{
+    const done=doneFlags[i];
+    const ic=i===0?'⌂':(done?'✓':String(i).padStart(2,'0'));
+    return `<div class="stepitem ${i===DB.cur?'on':''} ${done?'ok':''}" data-act="step" data-i="${i}">
+      <span class="sn">${ic}</span>
+      <span class="st">${esc(s.t)}<span class="en"> ${esc(s.en)}</span></span>
+    </div>`;
+  }).join('');
+  if(prevDone){
+    doneFlags.forEach((v,i)=>{ if(v&&!prevDone[i]){ celebrate(); palSay('小墨：第 '+i+' 步搞定！继续冲 ✦'); } });
+  }
+  prevDone=doneFlags;
+  const n=CONTENT_STEPS.filter(stepFilled).length;
+  $('#progN').textContent=n+'/'+CONTENT_STEPS.length;
+  $('#progBar').style.width=Math.round(n/CONTENT_STEPS.length*100)+'%';
+}
+
+function taskList(){
+  const list=[];
+  TASK_DEFS.forEach(t=>{
+    const locked=t.after?!blkFilled(t.after):false;
+    list.push({id:t.id, txt:tplFill(t.txt), done:!!DB.tasks[t.id], lock:locked, custom:false});
+  });
+  (DB.custom||[]).forEach(c=>list.push({id:c.id, txt:c.txt, done:!!c.done, lock:false, custom:true}));
+  return list;
+}
+function renderTasks(){
+  const list=taskList();
+  const open=list.filter(t=>!t.lock);
+  const n=open.filter(t=>t.done).length+'/'+open.length;
+  $('#tkCnt').textContent=n;
+  if($('#tkCntBig')) $('#tkCntBig').textContent=n;
+  const html=list.map(t=>`
+    <div class="tk ${t.done?'done':''} ${t.lock?'lock':''}" data-act="tk" data-id="${t.id}" title="${t.lock?'先完成上一步':(t.done?'点击取消':'点击打勾')}">
+      <span class="cb">${t.done?'✓':''}</span>
+      <span class="tx">${esc(t.txt)}</span>
+      ${t.custom?`<span class="cb" style="background:var(--r)" data-act="tk-del" data-id="${t.id}" title="删除">✕</span>`:''}
+    </div>`).join('');
+  $('#tkList').innerHTML=html;
+  if($('#tkListBig')) $('#tkListBig').innerHTML=html;
+}
+
+/* ---------- 渲染：主区分派 ---------- */
+let VIEWMODE=null; /* null / 'memo' / 'tasks'：备忘录和任务可在主区放大 */
+function renderView(){
+  if(VIEWMODE==='memo'){ renderBigMemo(); return; }
+  if(VIEWMODE==='tasks'){ renderBigTasks(); return; }
+  const v=VIEWS[DB.cur];
+  $('#crumb').textContent=v.t;
+  if(v.id==='home'){ renderHome(); return; }
+  renderStep(v);
+}
+
+/* ---------- 主区：备忘录放大 ---------- */
+function renderBigMemo(){
+  $('#crumb').textContent='备忘录 · 展开';
+  $('#wrap').innerHTML=`
+    <div class="pbanner">
+      <span class="no">✎</span>
+      <h1>备忘录<span class="en">MEMO</span></h1>
+      <div class="sub">一条一记，不限字数，长文可直接粘贴。重点词自动黄底红杠标出。</div>
+      <button class="btn sm" data-act="view-back">◀ 返回流水线</button>
+    </div>
+    <div class="card" style="max-width:900px">
+      <div class="big-add">
+        <input class="m-title-input" id="memoTitleBig" placeholder="给这条起个名字，例如：EP01 伏笔与道具 / 配音注意事项…" maxlength="60">
+        <textarea id="memoInBig" placeholder="内容写在这里……可以很长，可以换行。列表只显示名字，点名字才展开全文。"></textarea>
+        <div class="m-add"><span style="flex:1;font-size:11px;color:var(--mut)">回车 = 添加一条，Shift+回车 = 换行</span><button class="btn primary sm" data-act="memo-add">＋ 添加一条</button></div>
+      </div>
+      <div class="nav-label" style="border-bottom:2.5px solid var(--line);color:var(--ink)"><span>全部记录</span><span id="memoCntBig">0 条</span></div>
+      <div class="big-list" id="memoListBig" style="margin-top:8px"></div>
+    </div>`;
+}
+
+/* ---------- 主区：任务放大 ---------- */
+function renderBigTasks(){
+  $('#crumb').textContent='任务 · 展开';
+  const list=taskList();
+  $('#wrap').innerHTML=`
+    <div class="pbanner">
+      <span class="no">✓</span>
+      <h1>任务<span class="en">QUEST</span></h1>
+      <div class="sub">按流水线进度自动解锁；你也可以自己加。点一条打勾或取消。</div>
+      <button class="btn sm" data-act="view-back">◀ 返回流水线</button>
+    </div>
+    <div class="card big-task" style="max-width:900px">
+      <div class="nav-label" style="border-bottom:2.5px solid var(--line);color:var(--ink)"><span>任务清单</span><span id="tkCntBig">0/0</span></div>
+      <div id="tkListBig" style="margin-top:8px"></div>
+      <div class="tk-add" style="margin-top:12px">
+        <input id="tkInBig" placeholder="自己加一条任务…">
+        <button class="btn sm" data-act="tk-add">＋</button>
+      </div>
+    </div>`;
+}
+
+/* ---------- 首页：日历 + 日程 + 总览 ---------- */
+let calView=null, selDay=null;
+function dkey(y,m,d){ return y+'-'+m+'-'+d; }
+function lunarDay(d){ try{ return new Intl.DateTimeFormat('zh-CN-u-ca-chinese',{day:'numeric'}).format(d).replace('日',''); }catch(e){ return ''; } }
+function lunarMonth(d){ try{ return new Intl.DateTimeFormat('zh-CN-u-ca-chinese',{month:'long'}).format(d); }catch(e){ return ''; } }
+function lunarFull(d){ try{ return new Intl.DateTimeFormat('zh-CN-u-ca-chinese',{dateStyle:'full'}).format(d); }catch(e){ return ''; } }
+function evTotal(){ return Object.values(DB.events).reduce((a,l)=>a+l.length,0); }
+
+function renderHome(){
+  const now=new Date();
+  if(!calView) calView={y:now.getFullYear(), m:now.getMonth()};
+  if(!selDay) selDay=dkey(now.getFullYear(),now.getMonth()+1,now.getDate());
+  const vy=calView.y, vm=calView.m;
+  const first=new Date(vy,vm,1);
+  const dim=new Date(vy,vm+1,0).getDate();
+  const startPad=(first.getDay()+6)%7; /* 周一起 */
+  const todayKey=dkey(now.getFullYear(),now.getMonth()+1,now.getDate());
+  const cells=[];
+  const prevDim=new Date(vy,vm,0).getDate();
+  for(let i=0;i<startPad;i++) cells.push(`<div class="cal-d dim"><span class="dn">${prevDim-startPad+1+i}</span></div>`);
+  for(let d=1;d<=dim;d++){
+    const key=dkey(vy,vm+1,d);
+    const dd=new Date(vy,vm,d);
+    const ld=lunarDay(dd);
+    const lshow=(ld==='1')?lunarMonth(dd):ld;
+    const evs=DB.events[key]||[];
+    cells.push(`<div class="cal-d ${key===todayKey?'today':''} ${key===selDay?'sel':''}" data-act="cal" data-key="${key}">
+      ${evs.length?'<span class="ed"></span>':''}
+      <div class="dn">${d}</div><div class="ln">${esc(lshow)}</div>
+    </div>`);
+  }
+  let nx=1;
+  while(cells.length%7) cells.push(`<div class="cal-d dim"><span class="dn">${nx++}</span></div>`);
+
+  const selEvs=(DB.events[selDay]||[]);
+  const nDone=CONTENT_STEPS.filter(stepFilled).length;
+  $('#wrap').innerHTML=`
+    <div class="pbanner">
+      <span class="no">⌂</span>
+      <h1>首页<span class="en">HOME</span></h1>
+      <div class="sub">日历（公历 + 农历）· 日程 · 总览。点任意日期可添加日程。</div>
+    </div>
+    <div class="homegrid">
+      <div class="card">
+        <div class="cal-h">
+          <button class="btn sm yel" data-act="cal-prev">◀</button>
+          <b>${vy} 年 ${vm+1} 月</b>
+          <button class="btn sm yel" data-act="cal-next">▶</button>
+          <span style="flex:1"></span>
+          <span class="lun">${esc(lunarFull(now))}</span>
+          <button class="btn sm" data-act="cal-today">今天</button>
+        </div>
+        <div class="cal-dow"><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span></div>
+        <div class="cal-grid">${cells.join('')}</div>
+        <div class="ev-add">
+          <span class="en" style="font-size:10px;color:var(--mut)">${esc(selDay)}</span>
+          <input type="time" id="evTime">
+          <input type="text" id="evTxt" placeholder="这天要做什么…">
+          <button class="btn sm primary" data-act="ev-add">添加</button>
+        </div>
+      </div>
+      <div>
+        <div class="card" style="margin-bottom:14px">
+          <div class="nav-label" style="border-bottom:2.5px solid var(--line);color:var(--ink)"><span>日程 ${esc(selDay)}</span><span>${selEvs.length} 条</span></div>
+          <div style="max-height:220px;overflow:auto">
+            ${selEvs.length?selEvs.map(e=>`<div class="ev-item"><span class="et">${esc(e.hhmm||'全天')}</span><span class="ex">${esc(e.txt)}</span><button class="btn sm" data-act="ev-del" data-id="${e.id}" title="删除">✕</button></div>`).join(''):'<div class="ev-item" style="color:var(--mut)">这一天还没有日程</div>'}
+          </div>
+        </div>
+        <div class="card">
+          <div class="nav-label" style="border-bottom:2.5px solid var(--line);color:var(--ink)"><span>总览 OVERVIEW</span></div>
+          <div class="stat"><span>流水线进度</span><b>${nDone} / ${CONTENT_STEPS.length}</b></div>
+          <div class="stat"><span>素材库</span><b>${DB.assets.length} 个</b></div>
+          <div class="stat"><span>日程总数</span><b>${evTotal()} 条</b></div>
+          <div class="stat"><span>最近保存</span><b>${hhmm(DB.savedAt)}</b></div>
+        </div>
+      </div>
+    </div>`;
+}
+
+/* ---------- 渲染：步骤页 ---------- */
+function renderStep(s){
+  const i=DB.cur, vi=VIEWS.indexOf(s);
+  const flds=(s.fields||[]).map(f=>{
+    const v=DB.meta[f.key]!==undefined?DB.meta[f.key]:f.def;
+    if(f.type==='select') return `<div class="fld"><label>${esc(f.label)}</label><select data-meta="${f.key}">${f.opts.map(o=>`<option ${o===v?'selected':''}>${esc(o)}</option>`).join('')}</select></div>`;
+    if(f.type==='look'){
+      const isCustom=HOT_LOOKS.indexOf(v)<0;
+      return `<div class="fld"><label>画风</label>
+        <select data-looksel>
+          ${HOT_LOOKS.map(o=>`<option ${o===v?'selected':''}>${esc(o)}</option>`).join('')}
+          <option value="__c" ${isCustom?'selected':''}>自定义…</option>
+        </select>
+        <input data-lookinp type="text" placeholder="写你的画风" value="${esc(isCustom?v:'')}" style="${isCustom?'':'display:none'};min-width:150px">
+      </div>`;
+    }
+    return `<div class="fld"><label>${esc(f.label)}</label><input data-meta="${f.key}" type="${f.type==='number'?'number':'text'}" step="any" value="${esc(v)}"></div>`;
+  }).join('');
+
+  const legend='{{'+STEPS.flatMap(x=>x.blocks||[]).map(b=>b.k).join('}} {{')+'}} ｜ {{meta.mins}} {{meta.look}} {{meta.ratio}}';
+
+  const blks=(s.blocks||[]).map((b,bi)=>{
+    const v=blkVal(b.k), n=v.replace(/\s/g,'').length;
+    const custom=!!tplOf(b.k);
+    const raw=tplOf(b.k)||b.ai;
+    return `<div class="blk" data-blk="${b.k}">
+      <div class="blk-h">
+        <span class="sq" style="background:${['var(--r)','var(--b)','var(--g)','var(--o)'][bi%4]}"></span>
+        <b>${esc(b.label)}</b>
+        <span class="cnt" id="cnt-${b.k}">${n} 字</span>
+        <span class="grow"></span>
+        <button class="btn sm" data-act="copy-blk" data-k="${b.k}" ${v.trim()?'':'disabled'}>复制</button>
+      </div>
+      <textarea class="ta ${b.big?'big':''}" data-ta="${b.k}" placeholder="（点下方 AI 提示词，让 AI 生成后贴到这里；也可以自己直接写）">${esc(v)}</textarea>
+      ${b.ai?`
+      <details class="ai">
+        <summary><span class="tag ${custom?'c':''}">${custom?'CUSTOM':'AI PROMPT'}</span>生成「${esc(b.label)}」的提示词（已带入前面写的内容）</summary>
+        <pre>${esc(tplFill(raw))}</pre>
+        <div class="foot">
+          <span>粘到 DeepSeek / 豆包 / 通义，把结果贴回上面的框。</span>
+          <button class="btn sm" data-act="tpl-toggle" data-k="${b.k}">${custom?'改自定义模板':'固定单一？点这里改模板'}</button>
+          <button class="btn sm yel" data-act="copy-ai" data-k="${b.k}">复制提示词</button>
+        </div>
+        <div class="ai-edit" hidden>
+          <textarea class="ta sm" data-tpled="${b.k}">${esc(raw)}</textarea>
+          <div class="legend">可用变量：${esc(legend)}　｜　改完点保存，随时可恢复默认</div>
+          <div class="snav">
+            <button class="btn sm primary" data-act="tpl-save" data-k="${b.k}">保存模板</button>
+            <button class="btn sm" data-act="tpl-reset" data-k="${b.k}" ${custom?'':'disabled'}>恢复默认</button>
+            <button class="btn sm" data-act="tpl-toggle" data-k="${b.k}">收起</button>
+          </div>
+        </div>
+      </details>`:''}
+    </div>`;
+  }).join('');
+
+  const guide=s.guide?`
+    <div class="card guide" style="margin-bottom:16px">
+      ${s.guide.map((g,gi)=>`<div class="gstep"><span class="gn">${gi+1}</span><div class="gt">${g[0]}</div></div>`).join('')}
+    </div>`:'';
+
+  const copyline=s.copyline?`
+    <div class="copyline"><code>${esc(s.copyline.txt)}</code><button class="btn sm" data-act="copy-line">复制这句</button></div>`:'';
+
+  const assets=s.assets?`
+    <div class="blk">
+      <div class="blk-h">
+        <span class="sq" style="background:var(--b)"></span>
+        <b>素材回收站</b>
+        <span class="cnt" id="aCount">0</span>
+        <span class="grow"></span>
+        <button class="btn sm" data-act="asset-add">＋ 添加素材</button>
+      </div>
+      <div class="drop" data-act="asset-add">点击添加${s.assets==='img'?'图片':'视频 / 图片'}，或在本页直接 Ctrl+V 粘贴（不限个数）</div>
+      <div class="agrid" id="agrid"></div>
+    </div>`:'';
+
+  $('#wrap').innerHTML=`
+    <div class="pbanner">
+      <span class="no">${String(vi).padStart(2,'0')}</span>
+      <h1>${esc(s.t)}<span class="en">${esc(s.en)}</span></h1>
+      <div class="sub">${esc(s.tip||'')}</div>
+    </div>
+    ${guide}
+    ${flds?`<div class="fields">${flds}</div>`:''}
+    ${blks}
+    ${copyline}
+    ${assets}
+    <div class="snav">
+      <button class="btn" data-act="step" data-i="${i-1}" ${i===0?'disabled':''}>◀ 上一步</button>
+      <span style="flex:1"></span>
+      ${i<VIEWS.length-1?`<button class="btn primary" data-act="step" data-i="${i+1}">下一步 ▶</button>`:''}
+    </div>`;
+
+  document.querySelectorAll('[data-ta]').forEach(ta=>{
+    ta.addEventListener('input',()=>{
+      DB.blocks[ta.dataset.ta]=ta.value;
+      $('#cnt-'+ta.dataset.ta).textContent=ta.value.replace(/\s/g,'').length+' 字';
+      queueSave(); renderNav(); renderTasks();
+      const btn=ta.closest('.blk').querySelector('[data-act="copy-blk"]');
+      if(btn) btn.disabled=!ta.value.trim();
+    });
+    ta.addEventListener('blur',flush);
+  });
+  document.querySelectorAll('[data-meta]').forEach(el=>{
+    el.addEventListener('change',()=>{
+      DB.meta[el.dataset.meta]=el.value;
+      persist(); renderTasks(); refillPres();
+    });
+  });
+  const lookSel=document.querySelector('[data-looksel]');
+  if(lookSel){
+    const lookInp=document.querySelector('[data-lookinp]');
+    lookSel.addEventListener('change',()=>{
+      if(lookSel.value==='__c'){
+        lookInp.style.display='';
+        DB.meta.look=lookInp.value||'国风二次元';
+        lookInp.focus();
+      }else{
+        lookInp.style.display='none';
+        DB.meta.look=lookSel.value;
+      }
+      persist(); renderTasks(); refillPres();
+    });
+    lookInp.addEventListener('input',()=>{ DB.meta.look=lookInp.value; queueSave(); refillPres(); });
+  }
+  if(s.assets) renderAssets();
+}
+function refillPres(){
+  document.querySelectorAll('details.ai').forEach(det=>{
+    const blk=det.closest('.blk'); if(!blk) return;
+    const k=blk.dataset.blk;
+    let def=null;
+    STEPS.forEach(s=>(s.blocks||[]).forEach(b=>{ if(b.k===k) def=b; }));
+    if(def&&def.ai){
+      const pre=det.querySelector('pre');
+      if(pre) pre.textContent=tplFill(tplOf(k)||def.ai);
+    }
+  });
+}
+
+/* ---------- 素材回收站（文件存 IndexedDB，清单存 localStorage） ---------- */
+const URL_CACHE={};
+function idbOpen(){
+  return new Promise((res,rej)=>{
+    let r; try{ r=indexedDB.open('mojli_pix_assets',1); }catch(e){ return rej(e); }
+    r.onupgradeneeded=()=>{ r.result.createObjectStore('kv'); };
+    r.onsuccess=()=>res(r.result);
+    r.onerror=()=>rej(r.error);
+  });
+}
+async function aPut(id,blob){ const db=await idbOpen(); return new Promise((res,rej)=>{ const t=db.transaction('kv','readwrite'); t.objectStore('kv').put(blob,id); t.oncomplete=res; t.onerror=()=>rej(t.error); }); }
+async function aGet(id){ const db=await idbOpen(); return new Promise((res,rej)=>{ const q=db.transaction('kv').objectStore('kv').get(id); q.onsuccess=()=>res(q.result); q.onerror=()=>rej(q.error); }); }
+async function aDel(id){ const db=await idbOpen(); return new Promise((res,rej)=>{ const t=db.transaction('kv','readwrite'); t.objectStore('kv').delete(id); t.oncomplete=res; t.onerror=()=>rej(t.error); }); }
+
+async function addAssets(fileList){
+  const files=[...fileList].filter(f=>f.type.startsWith('image/')||f.type.startsWith('video/'));
+  if(!files.length){ toast('只支持图片或视频文件'); return; }
+  toast('正在存入素材库…');
+  for(const f of files){
+    const id='a'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+    try{ await aPut(id,f); }catch(e){ toast('素材存储失败（浏览器空间不足？）'); return; }
+    URL_CACHE[id]=URL.createObjectURL(f);
+    DB.assets.push({id, kind:f.type.startsWith('video')?'vid':'img', name:f.name||('素材 '+id), at:Date.now(), size:f.size});
+  }
+  persist(); renderNav(); renderAssets(); renderHomeIfActive();
+  toast('已添加 '+files.length+' 个素材');
+}
+function renderHomeIfActive(){ if(VIEWS[DB.cur].id==='home') renderView(); }
+async function renderAssets(){
+  const g=$('#agrid'); if(!g) return;
+  $('#aCount').textContent=String(DB.assets.length);
+  if(!DB.assets.length){
+    g.innerHTML='<div style="grid-column:1/-1;text-align:center;color:var(--mut);font-size:11.5px;padding:16px;border:2.5px dashed var(--line)">还没有素材 · 生成好的图 / 视频放这里，随用随复制</div>';
+    return;
+  }
+  g.innerHTML='';
+  for(const m of DB.assets){
+    if(!URL_CACHE[m.id]){
+      const b=await aGet(m.id).catch(()=>null);
+      if(b) URL_CACHE[m.id]=URL.createObjectURL(b);
+    }
+    const url=URL_CACHE[m.id];
+    const item=document.createElement('div');
+    item.className='aitem';
+    item.innerHTML=`
+      <div class="amedia">
+        <span class="knd">${m.kind==='vid'?'VIDEO':'IMG'}</span>
+        ${url?(m.kind==='vid'?`<video src="${url}" controls preload="metadata"></video>`:`<img src="${url}" alt="">`):'<span class="miss">素材缺失<br>（可能换了浏览器）</span>'}
+      </div>
+      <div class="aname" title="${esc(m.name)}">${esc(m.name)}</div>
+      <div class="aops">
+        ${url?`<button class="btn sm" data-act="asset-copy" data-id="${m.id}" data-kind="${m.kind}">${m.kind==='vid'?'下载':'复制'}</button>`:'<span style="flex:1"></span>'}
+        <button class="btn sm" data-act="asset-del" data-id="${m.id}">删除</button>
+      </div>`;
+    g.appendChild(item);
+  }
+}
+async function assetCopy(id,kind){
+  const blob=await aGet(id).catch(()=>null);
+  if(!blob){ toast('素材文件缺失'); return; }
+  if(kind==='img'&&navigator.clipboard&&window.ClipboardItem){
+    try{
+      await navigator.clipboard.write([new ClipboardItem({'image/png':blob})]);
+      toast('图片已复制，可直接粘到豆包 / 即梦'); return;
+    }catch(e){}
+  }
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob); a.download=(DB.assets.find(x=>x.id===id)||{}).name||'素材';
+  a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+  toast(kind==='vid'?'已开始下载':'复制受限，已改为下载');
+}
+async function assetDel(id){
+  await aDel(id).catch(()=>{});
+  if(URL_CACHE[id]){ URL.revokeObjectURL(URL_CACHE[id]); delete URL_CACHE[id]; }
+  DB.assets=DB.assets.filter(x=>x.id!==id);
+  persist(); renderAssets(); renderNav(); renderHomeIfActive();
+  toast('已删除');
+}
+document.addEventListener('paste',e=>{
+  const cur=VIEWS[DB.cur];
+  if(!cur||!cur.assets) return;
+  const fs=[...(e.clipboardData&&e.clipboardData.files||[])].filter(f=>f.type.startsWith('image/')||f.type.startsWith('video/'));
+  if(fs.length){ e.preventDefault(); addAssets(fs); }
+});
+$('#fileImg').addEventListener('change',e=>{ addAssets(e.target.files); e.target.value=''; });
+$('#fileVid').addEventListener('change',e=>{ addAssets(e.target.files); e.target.value=''; });
+
+/* ---------- 全局渲染 ---------- */
+/* ---------- 备忘录：一条一记 + 自动划重点（中文分词取核心词） ---------- */
+function autoTitle(t){
+  const s=String(t||'').trim().split('\n')[0].replace(/[，。！？；、,!?;:：]/g,'').trim();
+  return s.length>14?s.slice(0,14)+'…':(s||'未命名记录');
+}
+function normalizeMemos(){
+  DB.memos.forEach(m=>{
+    if(!m||typeof m!=='object') return;
+    if(typeof m.txt!=='string') m.txt='';
+    if(typeof m.title!=='string'||!m.title.trim()) m.title=autoTitle(m.txt);
+    if(!m.id) m.id='m'+Date.now().toString(36)+Math.random().toString(36).slice(2,5);
+    m.done=!!m.done;
+  });
+}
+const MEMO_FUNC=/[的了着过在把给和与及对让被从向往于是其这那你我他她它们就都很也还要会能可将已为以之而并且或但时后前上下里中对再没很太更]/;
+const MEMO_STOP=new Set(['这个','那个','一个','可以','需要','记得','然后','还有','因为','所以','如果','虽然','但是','注意','不要','没有','自己','我们','你们','他们','现在','什么','怎么','这样','那样','一下','一直','已经','可能','应该','必须','内容','东西','时间','事情','问题','这里','那里','一下','一些','还有','就是','不是','没有','使用','进行','通过','以及']);
+function memoWords(t){
+  const s=String(t||''); let segs=[];
+  if(window.Intl&&Intl.Segmenter){
+    try{
+      const sg=new Intl.Segmenter('zh',{granularity:'word'});
+      segs=[...sg.segment(s)].filter(x=>x.isWordLike).map(x=>({w:x.segment,i:x.index}));
+    }catch(e){}
+  }
+  if(!segs.length){
+    const ms=s.match(/[\u4e00-\u9fa5]{2,}|[A-Za-z][A-Za-z0-9_.+-]{1,}/g)||[];
+    let from=0; segs=[];
+    for(const w of ms){ const i=s.indexOf(w,from); if(i>=0){ segs.push({w,i}); from=i+w.length; } }
+  }
+  /* 相邻单字合成词：阿/狸 → 阿狸，网/盘 → 网盘 */
+  const words=[];
+  for(let i=0;i<segs.length;i++){
+    const a=segs[i],b=segs[i+1];
+    if(/^[\u4e00-\u9fa5]$/.test(a.w)&&b&&/^[\u4e00-\u9fa5]$/.test(b.w)&&b.i===a.i+a.w.length){
+      words.push({w:a.w+b.w,i:a.i}); i++;
+    } else words.push(a);
+  }
+  return words;
+}
+function memoKeys(t){
+  const s=String(t||''), cand=new Map();
+  for(const {w,i} of memoWords(t)){
+    if(w.length<2||/^\d+$/.test(w)||MEMO_STOP.has(w)) continue;
+    if(/[\u4e00-\u9fa5]/.test(w)&&MEMO_FUNC.test(w)) continue;
+    let sc=w.length*2+(i<6?1.5:0)+(i+w.length>=s.length-2?0.8:0);
+    if(/^[A-Za-z]/.test(w)) sc+=2;
+    cand.set(w,(cand.get(w)||0)+sc);
+  }
+  const picked=[];
+  const cap=s.length>80?8:4;
+  for(const [w] of [...cand].sort((a,b)=>b[1]-a[1]||b[0].length-a[0].length)){
+    if(picked.some(p=>p.includes(w)||w.includes(p))) continue;
+    picked.push(w);
+    if(picked.length>=cap) break;
+  }
+  return picked;
+}
+function memoHL(t){
+  const s=String(t||''), rs=[];
+  const add=(a,b,cls)=>{ if(b>a) rs.push({a,b,cls}); };
+  const re=/(#[^#\s@]{1,20})|(@[^#\s@]{1,20})|(\d{4}[-/]\d{1,2}[-/]\d{1,2}|\d{1,2}月\d{1,2}[日号]?|\d{1,2}-\d{1,2}|今天|明天|后天|周[一二三四五六日天])|(豆包|即梦|剪映|可灵|DeepSeek|deepseek)/g;
+  let m;
+  while((m=re.exec(s))) add(m.index,m.index+m[0].length,m[1]?'mk-tag':m[2]?'mk-at':m[3]?'mk-date':'mk-tool');
+  const maxHit=s.length>80?2:3;
+  for(const w of memoKeys(s)){
+    let from=0,i,hit=0;
+    while(hit<maxHit&&(i=s.indexOf(w,from))>=0){
+      const b=i+w.length;
+      if(!rs.some(r=>i<r.b&&b>r.a)){ add(i,b,'mk-key'); hit++; }
+      from=b;
+    }
+  }
+  rs.sort((x,y)=>x.a-y.a||(y.b-y.a)-(x.b-x.a));
+  const out=[]; let last=0;
+  for(const r of rs){
+    if(r.a<last) continue;
+    out.push(esc(s.slice(last,r.a)),`<span class="mk ${r.cls}">${esc(s.slice(r.a,r.b))}</span>`);
+    last=r.b;
+  }
+  out.push(esc(s.slice(last)));
+  return out.join('');
+}
+const memoOpen=new Set();
+function renderMemo(){
+  const html=DB.memos.length?DB.memos.map(m=>{
+    const open=memoOpen.has(m.id);
+    return `<div class="m-item ${m.done?'done':''}" data-id="${m.id}">
+      <span class="m-check" data-act="memo-tog" data-id="${m.id}" title="${m.done?'取消完成':'标记完成'}">${m.done?'✓':''}</span>
+      <div class="m-body">
+        <div class="m-title" data-act="memo-toggle-open" data-id="${m.id}" title="点击展开 / 收起全文">${open?'▾':'▸'} ${esc(m.title)}</div>
+        ${open?`<div class="m-full" data-act="memo-toggle-open" data-id="${m.id}">${memoHL(m.txt)}</div>`:''}
+      </div>
+      <button class="m-del" data-act="memo-del" data-id="${m.id}" title="删除这条">✕</button>
+    </div>`;
+  }).join(''):'<div style="font-size:11px;color:var(--mut);padding:6px 4px">还没有记录，在下面起个名字写一条</div>';
+  $('#memoList').innerHTML=html;
+  $('#memoCnt').textContent=DB.memos.length+'条';
+  if($('#memoListBig')) $('#memoListBig').innerHTML=html;
+  if($('#memoCntBig')) $('#memoCntBig').textContent=DB.memos.length+' 条';
+}
+function memoAdd(big){
+  const inp=big?$('#memoInBig'):$('#memoIn');
+  const tInp=big?$('#memoTitleBig'):$('#memoTitle');
+  if(!inp) return;
+  const v=inp.value.trim();
+  if(!v){ toast('先写点内容'); return; }
+  const title=(tInp&&tInp.value.trim())||autoTitle(v);
+  const id='m'+Date.now().toString(36)+Math.random().toString(36).slice(2,5);
+  DB.memos.unshift({id,title,txt:v,done:false});
+  memoOpen.add(id);
+  inp.value=''; if(tInp) tInp.value='';
+  inp.focus(); persist(); renderMemo();
+}
+function renderAll(){ renderNav(); renderView(); renderTasks(); renderMemo(); }
+
+/* ---------- 动作 ---------- */
+function setStep(i){
+  i=Math.max(0,Math.min(VIEWS.length-1,i));
+  VIEWMODE=null;
+  if(i===DB.cur){ closeDrawer(); renderAll(); return; }
+  flush(); DB.cur=i; persist();
+  renderAll(); $('#view').scrollTop=0; closeDrawer();
+  try{ history.replaceState(null,'','#'+VIEWS[i].id); }catch(e){}
+}
+function aggregate(){
+  const L=[];
+  CONTENT_STEPS.forEach(s=>s.blocks.forEach(b=>{
+    const v=blkVal(b.k).trim(); if(!v) return;
+    L.push('## '+s.t+' · '+b.label,'',v,'');
+  }));
+  return L.join('\n').trim()||null;
+}
+function exportMd(){
+  flush();
+  const body=aggregate();
+  if(!body){ toast('还没有可导出的内容'); return; }
+  const d=new Date(),p=n=>String(n).padStart(2,'0');
+  const name='漫剧工作台-'+d.getFullYear()+p(d.getMonth()+1)+p(d.getDate())+'.md';
+  const blob=new Blob(['\ufeff'+body],{type:'text/markdown;charset=utf-8'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+  toast('已导出 '+name);
+}
+function backup(){
+  flush();
+  const d=new Date(),p=n=>String(n).padStart(2,'0');
+  const name='像素工作台备份-'+d.getFullYear()+p(d.getMonth()+1)+p(d.getDate())+'.json';
+  const blob=new Blob([JSON.stringify(DB,null,2)],{type:'application/json'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+  toast('备份已下载（文字内容全在里面）');
+}
+function openDrawer(){ $('#sidebar').classList.add('open'); $('#scrim').classList.add('on'); }
+function closeDrawer(){ $('#sidebar').classList.remove('open'); $('#scrim').classList.remove('on'); }
+
+document.addEventListener('click',e=>{
+  const vop=e.target.closest('[data-act="view-open"]');
+  if(vop){
+    e.stopPropagation();
+    VIEWMODE=vop.dataset.view; renderAll(); $('#view').scrollTop=0; return;
+  }
+  const vback=e.target.closest('[data-act="view-back"]');
+  if(vback){
+    e.stopPropagation();
+    VIEWMODE=null; renderAll(); $('#view').scrollTop=0; return;
+  }
+  const mdel=e.target.closest('[data-act="memo-del"]');
+  if(mdel){
+    e.stopPropagation();
+    DB.memos=DB.memos.filter(x=>x.id!==mdel.dataset.id);
+    persist(); renderMemo(); return;
+  }
+  const del=e.target.closest('[data-act="tk-del"]');
+  if(del){
+    e.stopPropagation();
+    DB.custom=DB.custom.filter(c=>c.id!==del.dataset.id);
+    persist(); renderTasks(); toast('已删除');
+    return;
+  }
+  const el=e.target.closest('[data-act]');
+  if(!el) return;
+  const act=el.dataset.act;
+  switch(act){
+    case 'step': setStep(Number(el.dataset.i)); break;
+    case 'copy-blk': {
+      const k=el.dataset.k, v=blkVal(k).trim();
+      if(!v){ toast('这里还是空的'); break; }
+      copyText(blkVal(k),'内容已复制 ✓'); break;
+    }
+    case 'copy-ai': {
+      const k=el.dataset.k;
+      let def=null; STEPS.forEach(s=>(s.blocks||[]).forEach(b=>{ if(b.k===k) def=b; }));
+      if(!def||!def.ai){ toast('这一步没有 AI 提示词'); break; }
+      copyText(tplFill(tplOf(k)||def.ai),'提示词已复制 ✓'); break;
+    }
+    case 'tpl-toggle': {
+      const edit=el.closest('.ai').querySelector('.ai-edit');
+      edit.hidden=!edit.hidden;
+      break;
+    }
+    case 'tpl-save': {
+      const k=el.dataset.k;
+      const raw=document.querySelector('[data-tpled="'+k+'"]').value.trim();
+      if(!raw){ toast('模板不能为空'); break; }
+      DB.tpl[k]=raw; persist(); renderView(); toast('模板已保存，以后都用这份');
+      break;
+    }
+    case 'tpl-reset': {
+      const k=el.dataset.k;
+      delete DB.tpl[k]; persist(); renderView(); toast('已恢复默认模板');
+      break;
+    }
+    case 'copy-line': {
+      const s=VIEWS[DB.cur];
+      if(s.copyline) copyText(s.copyline.txt,'已复制 ✓');
+      break;
+    }
+    case 'copy-step': {
+      const s=VIEWS[DB.cur];
+      if(!s.blocks||!s.blocks.length){ toast('这一步没有可复制的文本'); break; }
+      const parts=s.blocks.map(b=>blkVal(b.k).trim()).filter(Boolean);
+      if(!parts.length){ toast('这一步还没写内容'); break; }
+      copyText(parts.join('\n\n---\n\n'),'本步内容已复制 ✓');
+      break;
+    }
+    case 'tk': {
+      if(el.classList.contains('lock')){ toast('先完成上一步再勾'); break; }
+      const id=el.dataset.id;
+      const cu=DB.custom.find(c=>c.id===id);
+      if(cu) cu.done=!cu.done; else DB.tasks[id]=!DB.tasks[id];
+      persist(); renderTasks(); break;
+    }
+    case 'tk-add': {
+      const inp=$('#tkInBig')||$('#tkIn'), v=inp.value.trim();
+      if(!v){ toast('先写点内容'); break; }
+      DB.custom.push({id:'c'+Date.now(), txt:v.slice(0,60), done:false});
+      inp.value=''; persist(); renderTasks(); break;
+    }
+    case 'memo-add': memoAdd(!!el.closest('.big-add')); break;
+    case 'dice': rollDice(); break;
+    case 'timer': toggleTimer(); break;
+    case 'fun-toggle':
+      DB.fun=!DB.fun; persist(); applyFun();
+      if(DB.fun) palSay('小墨：我回来啦！');
+      break;
+    case 'pal-talk': palTalk(); break;
+    case 'memo-tog': {
+      const m=DB.memos.find(x=>x.id===el.dataset.id);
+      if(m){ m.done=!m.done; persist(); renderMemo(); }
+      break;
+    }
+    case 'memo-toggle-open': {
+      const id=el.dataset.id;
+      if(memoOpen.has(id)) memoOpen.delete(id); else memoOpen.add(id);
+      renderMemo();
+      break;
+    }
+    case 'cal': { selDay=el.dataset.key; renderView(); break; }
+    case 'cal-prev': { calView.m--; if(calView.m<0){calView.m=11;calView.y--;} renderView(); break; }
+    case 'cal-next': { calView.m++; if(calView.m>11){calView.m=0;calView.y++;} renderView(); break; }
+    case 'cal-today': { const n=new Date(); calView={y:n.getFullYear(),m:n.getMonth()}; selDay=dkey(n.getFullYear(),n.getMonth()+1,n.getDate()); renderView(); break; }
+    case 'ev-add': {
+      const txt=$('#evTxt').value.trim();
+      if(!txt){ toast('先写要做什么'); break; }
+      const t=$('#evTime').value||'';
+      if(!DB.events[selDay]) DB.events[selDay]=[];
+      DB.events[selDay].push({id:'e'+Date.now(), hhmm:t, txt:txt.slice(0,80)});
+      persist(); renderView(); toast('日程已添加');
+      break;
+    }
+    case 'ev-del': {
+      if(!DB.events[selDay]) break;
+      DB.events[selDay]=DB.events[selDay].filter(x=>x.id!==el.dataset.id);
+      if(!DB.events[selDay].length) delete DB.events[selDay];
+      persist(); renderView(); toast('已删除');
+      break;
+    }
+    case 'asset-add': {
+      const s=VIEWS[DB.cur];
+      $(s&&s.assets==='vid'?'#fileVid':'#fileImg').click();
+      break;
+    }
+    case 'asset-copy': assetCopy(el.dataset.id, el.dataset.kind); break;
+    case 'asset-del': assetDel(el.dataset.id); break;
+    case 'export': exportMd(); break;
+    case 'backup': backup(); break;
+    case 'restore': $('#fileIn').click(); break;
+    case 'drawer': openDrawer(); break;
+    case 'drawer-close': closeDrawer(); break;
+  }
+});
+$('#fileIn').addEventListener('change',e=>{
+  const f=e.target.files&&e.target.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=()=>{
+    try{
+      const o=JSON.parse(r.result);
+      if(!o||typeof o.blocks!=='object') throw 0;
+      Object.keys(URL_CACHE).forEach(k=>URL.revokeObjectURL(URL_CACHE[k]));
+      for(const k in URL_CACHE) delete URL_CACHE[k];
+      DB.cur=Math.min(VIEWS.length-1,Number(o.cur)||0);
+      DB.meta=(o.meta&&typeof o.meta==='object')?o.meta:{};
+      DB.blocks={}; STEPS.forEach(s=>(s.blocks||[]).forEach(b=>{ DB.blocks[b.k]=typeof o.blocks[b.k]==='string'?o.blocks[b.k]:''; }));
+      DB.tasks=(o.tasks&&typeof o.tasks==='object')?o.tasks:{};
+      DB.custom=Array.isArray(o.custom)?o.custom:[];
+      DB.memos=Array.isArray(o.memos)?o.memos:(typeof o.memo==='string'&&o.memo.trim()?[{id:'m'+Date.now().toString(36),txt:o.memo.trim(),done:false}]:[]);
+      normalizeMemos();
+      DB.events=(o.events&&typeof o.events==='object')?o.events:{};
+      DB.tpl=(o.tpl&&typeof o.tpl==='object')?o.tpl:{};
+      DB.assets=Array.isArray(o.assets)?o.assets:[];
+      persist(); renderAll(); toast('已恢复备份（素材图片需在原浏览器）');
+    }catch(err){ toast('这个文件读不出来'); }
+    e.target.value='';
+  };
+  r.readAsText(f);
+});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){ closeDrawer(); return; }
+  if(/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName||'')) return;
+  if(e.altKey&&e.key==='ArrowRight') setStep(DB.cur+1);
+  if(e.altKey&&e.key==='ArrowLeft') setStep(DB.cur-1);
+});
+window.addEventListener('beforeunload',flush);
+document.addEventListener('visibilitychange',()=>{ if(document.hidden) flush(); });
+
+/* ---------- 启动 ---------- */
+load();
+(function(){
+  const h=decodeURIComponent((location.hash||'').replace(/^#/,'')).trim();
+  if(!h) return;
+  const idx=VIEWS.findIndex(v=>v.id===h);
+  const byNum=parseInt(h,10);
+  if(idx>=0) DB.cur=idx;
+  else if(byNum>=1&&byNum<=VIEWS.length) DB.cur=byNum-1;
+})();
+const memoKey=(inp,big)=>inp.addEventListener('keydown',e=>{
+  if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); memoAdd(big); }
+});
+memoKey($('#memoIn'),false);
+['memoTitle','memoTitleBig'].forEach(id=>{
+  const t=$('#'+id);
+  if(t) t.addEventListener('keydown',e=>{
+    if(e.key==='Enter'){ e.preventDefault(); (id==='memoTitleBig'?$('#memoInBig'):$('#memoIn')).focus(); }
+  });
+});
+document.addEventListener('keydown',e=>{
+  if(e.target&&e.target.id==='memoInBig'&&e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); memoAdd(true); }
+});
+renderAll();
+applyFun();
+setSave(DB.savedAt?'ok':'idle');
+try{ history.replaceState(null,'','#'+VIEWS[DB.cur].id); }catch(e){}
+</script>
+</body>
+</html>
